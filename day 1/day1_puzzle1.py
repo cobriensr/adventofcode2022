@@ -50,7 +50,7 @@ def extract_elf_calorie_data(file:str) -> list:
             elf_calorie_data.append(line.replace("\n", ""))
         return elf_calorie_data
 
-extracted_data = extract_elf_calorie_data(file="./day1_puzzle1_data.txt")
+extracted_data = extract_elf_calorie_data(file="./day 1/day1_puzzle1_data.txt")
 
 def clean_elf_calorie_data(extracted_values:list) -> list:
     """clean blanks with None values for the file extract"""
