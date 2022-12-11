@@ -47,3 +47,100 @@
 # you would get a total score of 15 (8 + 1 + 6).
 
 # What would your total score be if everything goes exactly according to your strategy guide?
+
+"""create dictionaries for plays, shapes and outcomes"""
+
+opponent_plays = {
+                    "A" : "Rock",
+                    "B" : "Paper",
+                    "C" : "Scissors"
+                }
+
+you_play = {
+            "X" : "Rock",
+            "Y" : "Paper",
+            "Z" : "Scissors"
+        }
+
+shape_scores = {
+                "Rock" : 1,
+                "Paper" : 2,
+                "Scissors" : 3
+            }
+
+outcome_scores = {
+                    "Loss" : 0,
+                    "Draw" : 3,
+                    "Win" : 6
+                }
+
+
+def extract_strategy_guide_data(file:str) -> list:
+    """extracts the strategy guide from the file"""
+    strategy_guide_scores = []
+    with open(file, 'r', encoding='utf-8') as data_file:
+        for line in data_file:
+            strategy_guide_scores.append(line.replace("\n", "").split())
+        return strategy_guide_scores
+
+extracted_data = extract_strategy_guide_data(file="./day2/day2_puzzle1_data.txt")
+
+def map_values(values:list) -> list:
+    """map shapes to letters"""
+    shapes = []
+    for item in values:
+        shapes.append([opponent_plays[item[0]], you_play[item[1]]])
+    return shapes
+
+mapped_values = map_values(values=extracted_data)
+
+def map_points(points: list) -> list:
+    """map points to each shape"""
+    shape_points = []
+    for item in points:
+        shape_points.append(shape_scores[item[1]])
+    return shape_points
+point_totals = map_points(points=mapped_values)
+
+def find_winner(games: list) -> list:
+    """find winner of each game"""
+    outcomes = []
+    for rounds in games:
+        if rounds[0] == rounds[1]:
+            outcomes.append("Draw")
+        if rounds[0] == "Rock" and rounds[1] == "Paper":
+            outcomes.append("Win")
+        elif rounds[0] == "Rock" and rounds[1] == "Scissors":
+            outcomes.append("Loss")
+        if rounds[0] == "Paper" and rounds[1] == "Rock":
+            outcomes.append("Loss")
+        elif rounds[0] == "Paper" and rounds[1] == "Scissors":
+            outcomes.append("Win")
+        if rounds[0] == "Scissors" and rounds[1] == "Rock":
+            outcomes.append("Win")
+        elif rounds[0] == "Scissors" and rounds[1] == "Paper":
+            outcomes.append("Loss")
+    return outcomes
+game_outcomes = find_winner(games=mapped_values)
+
+def map_scores(game_results: list) -> list:
+    """map scores to the game outcomes"""
+    scores = []
+    for game in game_results:
+        scores.append(outcome_scores[game])
+    return scores
+
+results = map_scores(game_results=game_outcomes)
+
+def sum_scores(shape_points: list, score_results: list) -> list:
+    """sum game scores with point scores"""
+    total_points = []
+    if len(shape_points) == len(score_results):
+        for point, score in zip(shape_points, score_results):
+            total_points.append(point+score)
+    point_sums = sum(total_points)
+    return point_sums
+
+totals = sum_scores(shape_points=point_totals, score_results=results)
+
+print(totals)
